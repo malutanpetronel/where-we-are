@@ -1,0 +1,25 @@
+{
+    "type": "plugin",
+    "license": "proprietary",
+    "description": "where-we-are",
+    "keywords": [
+        "wordpress",
+        "where-we-are"
+    ],
+    "authors": [
+        {
+            "name": "Petronel Malutan",
+            "email": "petro@webnou.ro",
+            "role": "Developer"
+        }
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "*",
+        "wp-coding-standards/wpcs": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "includes\\": "includes/"
+        }
+    }
+}

@@ -1,0 +1,33 @@
+/* Custom CSS for the plugin admin page */
+.wrap img {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.tab-content {
+    margin-top: 20px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+}
+
+.leaflet-control-attribution .aquis-attribution,
+.leaflet-control-attribution .aquis-attribution a {
+    font-weight: bold;
+    color: #314e64;
+    font-size: 14px;
+}
+.leaflet-control-attribution .aquis-attribution a {
+    background-color: #f8ff01;
+}
+
+/* Blink */
+.blink {
+    animation: blink-animation 0.8s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
