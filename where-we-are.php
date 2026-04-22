@@ -19,7 +19,7 @@ function ppwwa_plugin_menu() {
 		'where-we-are',        // Slug pentru pagină
 		'ppwwa_admin_page',    // 'petro_plugin_page',   // Funcția care afișează conținutul paginii
 		'dashicons-hammer',    // Iconița meniului
-		6                      // Poziția în meniu
+		100                      // Poziția în meniu
 	);
 }
 
