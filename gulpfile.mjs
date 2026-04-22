@@ -308,12 +308,13 @@ function archive(done) {
 
 // Rulează toate task-urile în secvență
 const build = gulp.series(
-    clean,
+    clean, updateChangelog,
     gulp.parallel(styles, scripts, scriptsSrc, php, libs, copyVersion, copyReadme, copyLanguages),
     images,
     // compressPHP,
     copyVendor,
     addHeader, addReadmeHeader,
+    gitTag,
     archive
 );
 
@@ -357,6 +358,44 @@ function validateZip(done) {
     done();
 }
 
+import { execSync } from 'child_process';
+
+function gitTag(done) {
+    const version = JSON.parse(fs.readFileSync('version.json', 'utf8'));
+    try {
+        execSync(`git tag v${version.version}`);
+        console.log(`Tagged: v${version.version}`);
+    } catch(e) {
+        console.log(`Tag v${version.version} există deja, skip.`);
+    }
+    done();
+}
+function updateChangelog(done) {
+    let commits;
+    try {
+        const lastTag = execSync('git describe --tags --abbrev=0').toString().trim();
+        commits = execSync(`git log ${lastTag}..HEAD --pretty=format:"* %s"`)
+            .toString().trim();
+    } catch(e) {
+        commits = execSync('git log -10 --pretty=format:"* %s"')
+            .toString().trim();
+    }
+
+    if (!commits) {
+        done(new Error('⛔ ABORT BUILD — Nu sunt commits noi față de ultimul tag!'));
+        return;
+    }
+
+    const newEntry = `= ${globalConfig.newVersion} =\n${commits}\n`;
+
+    let readme = fs.readFileSync('readme.txt', 'utf8');
+    readme = readme.replace('== Changelog ==\n', `== Changelog ==\n${newEntry}\n`);
+    fs.writeFileSync('readme.txt', readme);
+
+    console.log(`Changelog actualizat pentru v${globalConfig.newVersion}`);
+    done();
+}
+
 // Exportă task-urile
 export {
     clean,
@@ -364,7 +403,8 @@ export {
     images,
     // compressPHP,
     copyVendor,
-    addHeader, addReadmeHeader,
+    addHeader, addReadmeHeader, updateChangelog,
+    gitTag,
     archive,
     validateZip,
     build
