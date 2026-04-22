@@ -286,54 +286,46 @@ function ppwwa_render_map_tab( $args = array() ) {
 //}
 
 function ppwwa_admin_styles( $hook = '' ) {
-	// Verificăm dacă suntem în zona de administrare sau dacă pagina curentă conține shortcode-ul
-	if ( is_admin() ) {
-		// În zona de administrare, încarcă doar dacă suntem pe pagina pluginului
-		if ( $hook != 'toplevel_page_where-we-are' ) {
-			return;
-		}
-	} elseif ( ! ( is_singular() && has_shortcode( get_post()->post_content, 'where_we_are' ) ) ) {
-		// În zona publică, încarcă doar dacă există shortcode-ul în conținut
-		return;
-	}
+    if ( is_admin() ) {
+        if ( $hook != 'toplevel_page_where-we-are' ) {
+            return;
+        }
+    } elseif ( ! ( is_singular() && has_shortcode( get_post()->post_content, 'where_we_are' ) ) ) {
+        return;
+    }
 
-    $default_args_instance = new \includes\DefaultArgs();
+    $default_args_instance = new \PPWWA\DefaultArgs();
     $default_args = $default_args_instance->get_args();
 
     list($company, $address, $latitude, $longitude, $zoom, $slogan) = ppwwa_defaultOptions();
 
-	// Încarcă stilurile și scripturile necesare
-	wp_enqueue_style( 'leaflet_css', plugin_dir_url( __FILE__ ) . 'assets/vendor/leaflet/leaflet.css', array(), $default_args['version'] );
-	wp_enqueue_script( 'leaflet_js', plugin_dir_url( __FILE__ ) . 'assets/vendor/leaflet/leaflet.js', array(), $default_args['version'], true );
-	wp_enqueue_script( 'turf_js', plugin_dir_url( __FILE__ ) . 'assets/vendor/turf/turf.min.js', array(), $default_args['version'], true );
+    wp_enqueue_style( 'ppwwa_leaflet_css', plugin_dir_url( __FILE__ ) . 'assets/vendor/leaflet/leaflet.css', array(), $default_args['version'] );
+    wp_enqueue_script( 'ppwwa_leaflet_js', plugin_dir_url( __FILE__ ) . 'assets/vendor/leaflet/leaflet.js', array(), $default_args['version'], true );
+    wp_enqueue_script( 'ppwwa_turf_js', plugin_dir_url( __FILE__ ) . 'assets/vendor/turf/turf.min.js', array(), $default_args['version'], true );
 
-	wp_enqueue_style( 'admin-style_css', plugin_dir_url( __FILE__ ) . 'assets/css/admin-style.css', array(), $default_args['version'] );
+    wp_enqueue_style( 'ppwwa_admin_style', plugin_dir_url( __FILE__ ) . 'assets/css/admin-style.css', array(), $default_args['version'] );
 
-	// Încarcă scriptul principal al pluginului
-	wp_enqueue_script( 'petro_plugin_js', plugin_dir_url( __FILE__ ) . 'assets/js/admin-script.js', array( 'leaflet_js', 'turf_js' ), $default_args['version'], true );
+    wp_enqueue_script( 'ppwwa_main_js', plugin_dir_url( __FILE__ ) . 'assets/js/admin-script.js', array( 'ppwwa_leaflet_js', 'ppwwa_turf_js' ), $default_args['version'], true );
 
-	// Transmite date si către JavaScript
-	$map_data = array(
-		'company'   => $company,
-        'slogan' => $slogan,
-		'address'   => $address,
-		'latitude'  => $latitude,
-		'longitude' => $longitude,
-		'zoom'      => $zoom,
-		'paid'      => get_option( 'where_we_are_paid', false ),
-	);
-	wp_localize_script( 'petro_plugin_js', 'mapData', $map_data );
+    $map_data = array(
+            'company'   => $company,
+            'slogan'    => $slogan,
+            'address'   => $address,
+            'latitude'  => $latitude,
+            'longitude' => $longitude,
+            'zoom'      => $zoom,
+            'paid'      => get_option( 'ppwwa_paid', false ),
+    );
+    wp_localize_script( 'ppwwa_main_js', 'ppwwaMapData', $map_data );
 
-	// Localizează datele pentru iconiță
-	wp_localize_script(
-		'petro_plugin_js',
-		'pluginPetroData',
-		array(
-			'pluginUrl' => plugin_dir_url( __FILE__ ) . 'assets/',
-		)
-	);
+    wp_localize_script(
+            'ppwwa_main_js',
+            'ppwwaData',
+            array(
+                    'pluginUrl' => plugin_dir_url( __FILE__ ) . 'assets/',
+            )
+    );
 }
-
 /**
  * @return array
  */

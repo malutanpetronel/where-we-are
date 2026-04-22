@@ -4,14 +4,14 @@ function parseBool(value) {
 document.addEventListener('DOMContentLoaded', function () {
 
     // Informații despre companie
-    var company = mapData.company;
-    var slogan = mapData.slogan;
-    var address = mapData.address;
+    var company = ppwwaMapData.company;
+    var slogan = ppwwaMapData.slogan;
+    var address = ppwwaMapData.address;
     // Coordonate pentru marker
-    var lat = parseFloat(mapData.latitude);
-    var lng = parseFloat(mapData.longitude);
-    var zoom= parseInt(mapData.zoom);
-    var paid= parseBool(mapData.paid);
+    var lat = parseFloat(ppwwaMapData.latitude);
+    var lng = parseFloat(ppwwaMapData.longitude);
+    var zoom= parseInt(ppwwaMapData.zoom);
+    var paid= parseBool(ppwwaMapData.paid);
 
     // Inițializează harta la 46.7568158,23.5585006,16z
     var map = L.map('mapDiv').setView([lat, lng], zoom); // Setează coordonatele inițiale și nivelul de zoom
@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var logoIcon = L.icon({
-        iconUrl: pluginPetroData.pluginUrl + 'images/leaf.png',
-        shadowUrl: pluginPetroData.pluginUrl + 'images/leaf-shadow.png',
+        iconUrl: ppwwaData.pluginUrl + 'images/leaf.png',
+        shadowUrl: ppwwaData.pluginUrl + 'images/leaf-shadow.png',
         iconSize:     [44, 53], // size of the icon
         shadowSize:   [40, 10], // size of the shadow
         iconAnchor:   [22, 26], // point of the icon which will correspond to marker's location
