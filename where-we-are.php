@@ -199,7 +199,7 @@ function ppwwa_render_settings_tab() {
         }
 	}
 
-	list($company, $address, $latitude, $longitude, $zoom, $slogan) = ppwa_defaultOptions();
+	list($company, $address, $latitude, $longitude, $zoom, $slogan) = ppwwa_defaultOptions();
 
 	$default_args = array(
 		'company'   => $company,
@@ -300,7 +300,7 @@ function ppwwa_admin_styles( $hook = '' ) {
     $default_args_instance = new \includes\DefaultArgs();
     $default_args = $default_args_instance->get_args();
 
-    list($company, $address, $latitude, $longitude, $zoom, $slogan) = ppwa_defaultOptions();
+    list($company, $address, $latitude, $longitude, $zoom, $slogan) = ppwwa_defaultOptions();
 
 	// Încarcă stilurile și scripturile necesare
 	wp_enqueue_style( 'leaflet_css', plugin_dir_url( __FILE__ ) . 'assets/vendor/leaflet/leaflet.css', array(), $default_args['version'] );
@@ -337,7 +337,7 @@ function ppwwa_admin_styles( $hook = '' ) {
 /**
  * @return array
  */
-function ppwa_defaultOptions(): array {
+function ppwwa_defaultOptions(): array {
 	$company   = esc_html( get_option( 'where_we_are_company', 'AQUIS grana impex SRL' ) );
 	$address   = esc_html( get_option( 'where_we_are_address', '405200, Piata 16 Februarie nr. 2, Dej, Cluj, Romania' ) );
 	$latitude  = esc_html( get_option( 'where_we_are_latitude', 47.1445245 ) );
@@ -403,14 +403,3 @@ register_deactivation_hook( __FILE__, 'ppwwa_deactivate' );
 function ppwwa_deactivate() {
 	do_action( 'ppwwa_disable' );
 }
-
-// Functia pentru TRADUCERI
-function ppwwa_load_textdomain_conditionally() {
-    global $wp_version;
-
-    // Load textdomain only for WordPress versions < 4.6
-    if ( version_compare( $wp_version, '4.6', '<' ) ) {
-        load_plugin_textdomain( 'where-we-are', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-    }
-}
-add_action( 'plugins_loaded', 'ppwwa_load_textdomain_conditionally' );

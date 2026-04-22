@@ -1,6 +1,6 @@
 <?php
 
-namespace includes;
+namespace PPWWA;
 
 class DefaultArgs {
     private $args;

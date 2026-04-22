@@ -16,6 +16,13 @@ function ppwwa_add_buy_query_var($vars) {
     return $vars;
 }
 
+// Permite redirecționarea către shop.webnou.ro
+add_filter('allowed_redirect_hosts', 'ppwwa_allow_shop_redirect');
+function ppwwa_allow_shop_redirect($hosts) {
+    $hosts[] = 'shop.webnou.ro';
+    return $hosts;
+}
+
 add_action('template_redirect', 'ppwwa_handle_buy_request');
 function ppwwa_handle_buy_request() {
     if (get_query_var('buy_initiate')) {
@@ -31,13 +38,12 @@ function ppwwa_handle_buy_request() {
         // Construiește URL-ul de redirecționare către magazinul WooCommerce
         $redirect_url = add_query_arg([
             'add-to-cart' => 2144,
-            'quantity' => 1,
-            'wwa_ref' => urlencode(home_url()), // URL-ul unde utilizatorul va fi redirecționat după finalizare
-            'wwa_email' => urlencode($email),
+            'quantity'    => 1,
+            'wwa_ref'     => urlencode(home_url()),
+            'wwa_email'   => urlencode($email),
         ], $shop_url);
 
-        // Redirecționează utilizatorul către magazinul WooCommerce
-        wp_redirect($redirect_url);
+        wp_safe_redirect($redirect_url);
         exit;
     }
 }
@@ -57,10 +63,7 @@ function ppwwa_add_buy_success_query_var($vars) {
 add_action('template_redirect', 'ppwwa_handle_buy_success_request');
 function ppwwa_handle_buy_success_request() {
     if (get_query_var('buy_success')) {
-        update_option('where_we_are_paid', 1);
+        update_option('ppwwa_paid', 1); // ← prefix adăugat
         wp_die('Thank you for your purchase! Your payment was successful.');
-        // Alternativ, redirecționează utilizatorul către o altă pagină de succes:
-        // wp_redirect(home_url('/thank-you'));
-        // exit;
     }
 }

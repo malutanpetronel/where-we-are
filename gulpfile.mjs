@@ -27,6 +27,10 @@ const paths = {
         src: 'version.json',
         dest: 'dist'
     },
+    languages: {
+        src: 'languages/**/*',
+        dest: 'dist/languages'
+    },
     css: {
         src: 'assets/css/*.css',
         dest: 'dist/assets/css'
@@ -194,6 +198,12 @@ function copyReadme() {
         .pipe(gulp.dest(paths.readme.dest));
 };
 
+// Task pentru a copia folderul languages
+async function copyLanguages() {
+    return gulp.src(paths.languages.src, { allowEmpty: true })
+        .pipe(gulp.dest(paths.languages.dest));
+}
+
 // Copiază librăriile third-party din vendor
 function libs() {
     return gulp.src(paths.libs.src)
@@ -226,11 +236,14 @@ async function addHeader() {
     Description: Set your map location on a OpenStreet MAP, and let your customers find you easy and see directions from where they are to your location.
     Requires at least: 5.0
     Requires PHP: 7.4
+    Text Domain: where-we-are
+    Domain Path: /languages
     Version: ${globalConfig.newVersion}
     Author: ${globalConfig.author} | AQUIS | <a href="https://www.webnou.ro/produse/WordPress/where-we-are">Where-We-Are</a> | <a href="https://shop.webnou.ro">WebNou Shop</a>
     Author URI: ${globalConfig.uri}
     Company: ${globalConfig.company}
     License: GPLv2 or later
+    License URI: https://www.gnu.org/licenses/gpl-2.0.html
     */
 ?>`;
 
@@ -245,7 +258,7 @@ Contributors: ${globalConfig.author}
 Donate link: https://www.paypal.com/donate/?hosted_button_id=97HQX5UFJFNJ2
 Tags: map, location, directions, company location, where we are
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
 Stable tag: ${globalConfig.newVersion}
 License: GPLv2 or later
@@ -290,7 +303,7 @@ function archive(done) {
 // Rulează toate task-urile în secvență
 const build = gulp.series(
     clean,
-    gulp.parallel(styles, scripts, php, libs, copyVersion, copyReadme),
+    gulp.parallel(styles, scripts, php, libs, copyVersion, copyReadme, copyLanguages),
     images,
     // compressPHP,
     copyVendor,
@@ -341,7 +354,7 @@ function validateZip(done) {
 // Exportă task-urile
 export {
     clean,
-    styles, scripts, php, libs, copyVersion, copyReadme,
+    styles, scripts, php, libs, copyVersion, copyReadme, copyLanguages,
     images,
     // compressPHP,
     copyVendor,
