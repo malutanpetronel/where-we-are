@@ -15,6 +15,8 @@ Purchasing the plugin supports ongoing development and improvements. Note that t
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Use the shortcode `[where_we_are]` to display the map in posts or pages.
 
+NOTE: The unminified source files are located in the `assets/js/src/` folder.
+
 == External Services ==
 
 This plugin connects weekly to an API hosted at [https://shop.webnou.ro/](https://shop.webnou.ro/) to check whether the attribution message should be displayed at the bottom of the map widget.

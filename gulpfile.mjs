@@ -128,6 +128,12 @@ function scripts() {
         .pipe(gulp.dest(paths.js.dest));
 }
 
+// Copiază sursele JS neminificate
+function scriptsSrc() {
+    return gulp.src(paths.js.src)
+        .pipe(gulp.dest('dist/assets/js/src'));
+}
+
 // Copiază fișierele PHP, excluzând `compress_php.php`
 function php() {
     return gulp.src([
@@ -303,7 +309,7 @@ function archive(done) {
 // Rulează toate task-urile în secvență
 const build = gulp.series(
     clean,
-    gulp.parallel(styles, scripts, php, libs, copyVersion, copyReadme, copyLanguages),
+    gulp.parallel(styles, scripts, scriptsSrc, php, libs, copyVersion, copyReadme, copyLanguages),
     images,
     // compressPHP,
     copyVendor,
