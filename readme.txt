@@ -41,6 +41,9 @@ When making this purchase, the domain where the plugin is installed will be sent
 This service is provided by "AQUIS Grana impex SRL". For more information, please refer to our [Terms of Use](https://shop.webnou.ro/terms-and-conditions/) and [Privacy Policy](https://shop.webnou.ro/privacy-policy/).
 
 == Changelog ==
+= 1.5.43 =
+* No copyVendor for the moment needed
+
 = 1.5.41 =
 * Fix copyVendor - composer install --no-dev
 
