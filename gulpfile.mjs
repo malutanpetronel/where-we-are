@@ -19,6 +19,7 @@ const pluginName = `where-we-are`
 
 // Căile fișierelor sursă și de destinație
 const paths = {
+    svn: '../Accepted Wordpress Plugins/svn-where-we-are',
     readme: {
         src: 'readme.txt',
         dest: 'dist'
@@ -396,6 +397,45 @@ function updateChangelog(done) {
     done();
 }
 
+function deploy(done) {
+    const version = globalConfig.newVersion;
+    const svnPath = paths.svn;
+    const distPath = './dist';
+
+    try {
+        // 1. Curăță trunk și copiază dist/
+        execSync(`rm -rf ${svnPath}/trunk/*`);
+        execSync(`cp -r ${distPath}/* ${svnPath}/trunk/`);
+        console.log('✔ Copiat dist/ în trunk/');
+
+        // 2. Creează tag din trunk
+        const tagPath = `${svnPath}/tags/${version}`;
+        try {
+            execSync(`svn copy ${svnPath}/trunk/ ${tagPath}`);
+            console.log(`✔ Tag creat: tags/${version}`);
+        } catch(e) {
+            console.log(`⚠ Tag ${version} există deja, skip.`);
+        }
+
+        // 3. svn add fișiere noi
+        execSync(`svn add --force ${svnPath}/trunk/`);
+        execSync(`svn add --force ${tagPath}`);
+        console.log('✔ svn add efectuat');
+
+        // 4. svn commit
+        execSync(`svn commit ${svnPath} -m "Release v${version}" --username lenotrep`, {
+            stdio: 'inherit' // afișează output inclusiv prompt parolă
+        });
+        console.log(`✔ Deploy v${version} finalizat!`);
+
+    } catch(e) {
+        done(new Error(`⛔ Deploy eșuat: ${e.message}`));
+        return;
+    }
+
+    done();
+}
+
 // Exportă task-urile
 export {
     clean,
@@ -407,5 +447,6 @@ export {
     gitTag,
     archive,
     validateZip,
-    build
+    build,
+    deploy
 };

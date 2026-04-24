@@ -41,13 +41,15 @@ When making this purchase, the domain where the plugin is installed will be sent
 This service is provided by "AQUIS Grana impex SRL". For more information, please refer to our [Terms of Use](https://shop.webnou.ro/terms-and-conditions/) and [Privacy Policy](https://shop.webnou.ro/privacy-policy/).
 
 == Changelog ==
+= 1.5.35 =
+* Internal BUILD ABORT for plugin  when no new commits.
+...
 = 1.5.32 =
 * Added non minified src for js
 * Changed menu position
 * Changed prefix for methods
 * Initial changes for publishing
 * Reset repo - fără istoric
-
 ...
 = 1.2.0 =
 * Added the tabs in the admin area
