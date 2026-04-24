@@ -337,7 +337,7 @@ const build = gulp.series(
     gulp.parallel(styles, scripts, scriptsSrc, php, libs, copyVersion, copyReadme, copyLanguages),
     images,
     // compressPHP,
-    copyVendor,
+    // copyVendor,
     addHeader, addReadmeHeader,
     gitTag,
     archive
