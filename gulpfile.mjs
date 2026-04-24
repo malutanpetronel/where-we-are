@@ -147,6 +147,7 @@ function php() {
         '!compress_php.php',
         '!tests/**',
         '!**/tests/**',
+        '!vendor/**',     // ← adaugă asta
     ])
     .pipe(gulp.dest(paths.php.dest));
 }
@@ -169,23 +170,11 @@ function copyVendor(done) {
 
     gulp.src([
         'vendor/**/*',
-        '!vendor/bin/**',
-        '!vendor/**/test{,s}/**',
-        '!vendor/**/Test{,s}/**',
-        '!vendor/**/demo{,s}/**',
-        '!vendor/**/examples/**',
-        '!vendor/**/demos/**',
-        '!vendor/**/docs/**',
-        '!vendor/**/.git/**',
-        '!vendor/**/composer.json',
-        '!vendor/**/composer.lock',
-        '!vendor/**/phpunit.*',
     ], {base: './'})
         .pipe(gulp.dest('dist'))
-        .on('end', () => {
-            // 3. Restaurează vendor cu dev pentru development
+        .on('finish', () => {
             execSync('composer install', { stdio: 'inherit' });
-            console.log('✔ Composer install (cu dev) restaurat');
+            console.log('✔ Composer dev restaurat');
             done();
         });
 }
@@ -337,7 +326,7 @@ const build = gulp.series(
     gulp.parallel(styles, scripts, scriptsSrc, php, libs, copyVersion, copyReadme, copyLanguages),
     images,
     // compressPHP,
-    // copyVendor,
+    copyVendor,
     addHeader, addReadmeHeader,
     gitTag,
     archive
@@ -409,6 +398,7 @@ function updateChangelog(done) {
     if (!commits) {
         done(new Error('⛔ ABORT BUILD — Nu sunt commits noi față de ultimul tag!'));
         return;
+        // commits = 'test';
     }
 
     const newEntry = `= ${globalConfig.newVersion} =\n${commits}\n`;
