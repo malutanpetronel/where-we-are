@@ -41,6 +41,10 @@ When making this purchase, the domain where the plugin is installed will be sent
 This service is provided by "AQUIS Grana impex SRL". For more information, please refer to our [Terms of Use](https://shop.webnou.ro/terms-and-conditions/) and [Privacy Policy](https://shop.webnou.ro/privacy-policy/).
 
 == Changelog ==
+= 1.5.36 =
+* Added deploy task and changelog automation
+* Added deploy task and changelog automation Fix gitignore for .idea folder
+
 = 1.5.35 =
 * Internal BUILD ABORT for plugin  when no new commits.
 ...

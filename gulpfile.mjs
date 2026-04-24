@@ -54,8 +54,13 @@ const paths = {
     }
 };
 
-const incrementType = await chooseVersionIncrement();
-const globalConfig = incrementVersion(incrementType);
+// const incrementType = await chooseVersionIncrement();
+// const globalConfig = incrementVersion(incrementType);
+let globalConfig = null;
+async function bumpVersion() {
+    const incrementType = await chooseVersionIncrement();
+    globalConfig = incrementVersion(incrementType);
+}
 
 // Task to Prompt for Version Increment Type
 async function chooseVersionIncrement() {
@@ -309,6 +314,7 @@ function archive(done) {
 
 // Rulează toate task-urile în secvență
 const build = gulp.series(
+    bumpVersion,
     clean, updateChangelog,
     gulp.parallel(styles, scripts, scriptsSrc, php, libs, copyVersion, copyReadme, copyLanguages),
     images,
@@ -398,33 +404,30 @@ function updateChangelog(done) {
 }
 
 function deploy(done) {
-    const version = globalConfig.newVersion;
+    const versionData = JSON.parse(fs.readFileSync('version.json', 'utf8'));
+    const version = versionData.version;  // ← direct din fișier
     const svnPath = paths.svn;
     const distPath = './dist';
 
     try {
-        // 1. Curăță trunk și copiază dist/
-        execSync(`rm -rf ${svnPath}/trunk/*`);
-        execSync(`cp -r ${distPath}/* ${svnPath}/trunk/`);
+        execSync(`rm -rf "${svnPath}/trunk/*"`);
+        execSync(`cp -r ${distPath}/* "${svnPath}/trunk/"`);
         console.log('✔ Copiat dist/ în trunk/');
 
-        // 2. Creează tag din trunk
         const tagPath = `${svnPath}/tags/${version}`;
         try {
-            execSync(`svn copy ${svnPath}/trunk/ ${tagPath}`);
+            execSync(`svn copy "${svnPath}/trunk/" "${tagPath}"`);
             console.log(`✔ Tag creat: tags/${version}`);
         } catch(e) {
             console.log(`⚠ Tag ${version} există deja, skip.`);
         }
 
-        // 3. svn add fișiere noi
-        execSync(`svn add --force ${svnPath}/trunk/`);
-        execSync(`svn add --force ${tagPath}`);
+        execSync(`svn add --force "${svnPath}/trunk/"`);
+        execSync(`svn add --force "${tagPath}"`);
         console.log('✔ svn add efectuat');
 
-        // 4. svn commit
-        execSync(`svn commit ${svnPath} -m "Release v${version}" --username lenotrep`, {
-            stdio: 'inherit' // afișează output inclusiv prompt parolă
+        execSync(`svn commit "${svnPath}" -m "Release v${version}" --username lenotrep`, {
+            stdio: 'inherit'
         });
         console.log(`✔ Deploy v${version} finalizat!`);
 
