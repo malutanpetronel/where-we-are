@@ -152,10 +152,22 @@ function php() {
 }
 
 // Copiere fișiere Composer
-function copyVendor() {
-    return gulp.src([
-        'composer.json',
-        'composer.lock',
+function copyVendor(done) {
+    try {
+        // 1. Șterge vendor/ existent
+        execSync('rm -rf vendor/', { stdio: 'inherit' });
+        console.log('✔ vendor/ șters');
+
+        // 2. Reinstalează doar producție
+        execSync('composer install --no-dev --optimize-autoloader', { stdio: 'inherit' });
+        console.log('✔ Composer install --no-dev efectuat');
+
+    } catch(e) {
+        done(new Error(`⛔ Composer install eșuat: ${e.message}`));
+        return;
+    }
+
+    gulp.src([
         'vendor/**/*',
         '!vendor/bin/**',
         '!vendor/**/test{,s}/**',
@@ -169,7 +181,13 @@ function copyVendor() {
         '!vendor/**/composer.lock',
         '!vendor/**/phpunit.*',
     ], {base: './'})
-        .pipe(gulp.dest('dist')); // Folderul unde va fi build-ul
+        .pipe(gulp.dest('dist'))
+        .on('end', () => {
+            // 3. Restaurează vendor cu dev pentru development
+            execSync('composer install', { stdio: 'inherit' });
+            console.log('✔ Composer install (cu dev) restaurat');
+            done();
+        });
 }
 
 // Copiază fișierele de imagini folosind `fs` pentru copiere binară
